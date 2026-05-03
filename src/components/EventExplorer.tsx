@@ -13,21 +13,25 @@ type Props = {
 
 const ERA_ORDER: WorldHistoryEvent["era"][] = ["고대", "중세", "근세", "근대", "현대"];
 
-const mapRegions: Record<Region | "세계 교류", { x: number; y: number; w: number; h: number; label: string }> = {
-  동아시아: { x: 77, y: 30, w: 15, h: 17, label: "동아시아" },
-  인도: { x: 68, y: 42, w: 12, h: 12, label: "인도" },
-  서아시아: { x: 58, y: 30, w: 16, h: 14, label: "서아시아" },
-  유럽: { x: 49, y: 20, w: 13, h: 12, label: "유럽" },
-  아프리카: { x: 47, y: 35, w: 18, h: 28, label: "아프리카" },
-  아메리카: { x: 14, y: 18, w: 26, h: 40, label: "아메리카" },
-  "세계 교류": { x: 42, y: 66, w: 20, h: 10, label: "세계 교류" }
+const regionOverlays: Record<Region | "세계 교류", { label: string; d: string }> = {
+  동아시아: { label: "동아시아", d: "M690 130 L820 130 L860 210 L810 300 L710 320 L650 250 L670 180 Z" },
+  인도: { label: "인도", d: "M620 260 L700 250 L730 320 L680 380 L610 360 L590 300 Z" },
+  서아시아: { label: "서아시아", d: "M520 170 L640 170 L660 260 L580 300 L500 260 L480 200 Z" },
+  유럽: { label: "유럽", d: "M430 90 L560 90 L590 170 L540 230 L440 220 L400 150 Z" },
+  아프리카: { label: "아프리카", d: "M450 220 L600 240 L610 470 L520 600 L430 520 L410 340 Z" },
+  아메리카: { label: "아메리카", d: "M90 70 L310 60 L350 220 L300 430 L260 600 L150 590 L100 380 L70 180 Z" },
+  "세계 교류": { label: "세계 교류", d: "M330 300 L750 300 L750 370 L330 370 Z" }
 };
+
+const mapBasePath =
+  "M66 95 L141 69 L257 54 L292 88 L300 132 L335 203 L346 271 L331 364 L304 432 L267 565 L201 583 L152 559 L108 472 L89 340 L79 271 L58 227 L38 153 Z M364 110 L393 101 L447 87 L505 90 L550 101 L581 132 L637 153 L703 132 L784 138 L863 196 L914 232 L921 291 L882 325 L835 318 L775 345 L740 396 L713 433 L727 469 L705 508 L644 512 L611 579 L562 604 L523 579 L511 496 L451 458 L417 372 L400 286 L379 227 L350 180 Z M444 228 L502 244 L548 277 L587 343 L584 440 L559 497 L521 560 L485 515 L456 433 L445 350 L444 297 Z M789 433 L863 450 L884 486 L866 526 L800 540 L753 507 L749 469 Z";
 
 export default function EventExplorer({ events }: Props) {
   const [eraFilter, setEraFilter] = useState<FilterValue>(FILTER_ALL);
   const [regionFilter, setRegionFilter] = useState<FilterValue>(FILTER_ALL);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(events[0]?.id ?? "");
+  const [hoverRegion, setHoverRegion] = useState<Region | "세계 교류" | null>(null);
 
   const eras = useMemo(() => getEras(events), [events]);
   const regions = useMemo(() => getRegions(events), [events]);
@@ -48,20 +52,16 @@ export default function EventExplorer({ events }: Props) {
         </div>
 
         <div className="history-canvas" aria-label="세계사 구조 캔버스">
-          <MiniWorldMap activeRegion={selectedEvent?.region ?? null} />
+          <WorldMapCanvas
+            activeRegion={selectedEvent?.region ?? null}
+            hoverRegion={hoverRegion}
+            onHoverRegion={setHoverRegion}
+            onSelectRegion={(region) => setRegionFilter(region)}
+          />
           <TimelineRibbon events={filteredEvents} selectedEvent={selectedEvent} />
         </div>
 
-        <FilterBar
-          eras={eras}
-          regions={regions}
-          eraFilter={eraFilter}
-          regionFilter={regionFilter}
-          query={query}
-          onEraChange={setEraFilter}
-          onRegionChange={setRegionFilter}
-          onQueryChange={setQuery}
-        />
+        <FilterBar eras={eras} regions={regions} eraFilter={eraFilter} regionFilter={regionFilter} query={query} onEraChange={setEraFilter} onRegionChange={setRegionFilter} onQueryChange={setQuery} />
 
         <div className="result-meta">
           <strong>검색 결과</strong>
@@ -84,35 +84,28 @@ export default function EventExplorer({ events }: Props) {
   );
 }
 
-function MiniWorldMap({ activeRegion }: { activeRegion: Region | null }) {
+function WorldMapCanvas({ activeRegion, hoverRegion, onHoverRegion, onSelectRegion }: { activeRegion: Region | null; hoverRegion: Region | "세계 교류" | null; onHoverRegion: (region: Region | "세계 교류" | null) => void; onSelectRegion: (region: Region) => void; }) {
   return (
-    <section className="map-shell" aria-label="미니 세계 지도">
-      <div className="map-header">
-        <strong>역사 지리 레이어</strong>
-        <span>향후 선/면 오버레이 확장 가능</span>
-      </div>
-      <svg viewBox="0 0 100 80" role="img" aria-label="지역별 역사 지도">
-        <rect x="2" y="2" width="96" height="76" rx="8" className="map-frame" />
-        {Object.entries(mapRegions).map(([region, shape]) => {
-          const isActive = activeRegion === region;
+    <section className="map-shell" aria-label="세계 지도 인터페이스">
+      <div className="map-header"><strong>메인 세계지도 인터페이스</strong><span>지역 hover/click으로 필터</span></div>
+      <svg viewBox="0 0 960 640" role="img" aria-label="세계사 학습용 세계 지도">
+        <rect x="12" y="12" width="936" height="616" rx="14" className="map-frame" />
+        <path d={mapBasePath} className="world-land" />
+        {Object.entries(regionOverlays).map(([region, shape]) => {
+          const isActive = activeRegion === region || hoverRegion === region;
           return (
-            <g key={region}>
-              <rect
-                x={shape.x}
-                y={shape.y}
-                width={shape.w}
-                height={shape.h}
-                rx="2"
-                className={`map-region ${isActive ? "active" : ""}`}
-              />
-              <text x={shape.x + shape.w / 2} y={shape.y + shape.h / 2} className="map-label">
-                {shape.label}
-              </text>
-            </g>
+            <path
+              key={region}
+              d={shape.d}
+              className={`map-region ${isActive ? "active" : ""}`}
+              onMouseEnter={() => onHoverRegion(region as Region | "세계 교류")}
+              onMouseLeave={() => onHoverRegion(null)}
+              onClick={() => region !== "세계 교류" && onSelectRegion(region as Region)}
+            />
           );
         })}
       </svg>
-      <p className="map-note">선택 사건의 핵심 지역이 강조됩니다.</p>
+      <p className="map-note">선택 사건 지역이 강조되며, 영역 클릭으로 지역 필터가 적용됩니다.</p>
     </section>
   );
 }
