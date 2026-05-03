@@ -14,7 +14,6 @@ type Props = {
 
 const ERA_ORDER: WorldHistoryEvent["era"][] = ["고대", "중세", "근세", "근대", "현대"];
 
-
 export default function EventExplorer({ events }: Props) {
   const [eraFilter, setEraFilter] = useState<FilterValue>(FILTER_ALL);
   const [regionFilter, setRegionFilter] = useState<FilterValue>(FILTER_ALL);
@@ -41,7 +40,12 @@ export default function EventExplorer({ events }: Props) {
 
         <div className="history-canvas" aria-label="세계사 구조 캔버스">
           <WorldMapPanel events={filteredEvents} selectedEvent={selectedEvent} onSelectEvent={setSelectedId} />
-          <TimelineRibbon events={filteredEvents} selectedEvent={selectedEvent} />
+          <TimelineRibbon
+            events={events}
+            selectedEvent={selectedEvent}
+            activeEra={eraFilter}
+            onEraSelect={(era) => setEraFilter((prev) => (prev === era ? FILTER_ALL : era))}
+          />
         </div>
 
         <FilterBar
@@ -76,17 +80,33 @@ export default function EventExplorer({ events }: Props) {
   );
 }
 
-function TimelineRibbon({ events, selectedEvent }: { events: WorldHistoryEvent[]; selectedEvent: WorldHistoryEvent | null }) {
+function TimelineRibbon({
+  events,
+  selectedEvent,
+  activeEra,
+  onEraSelect
+}: {
+  events: WorldHistoryEvent[];
+  selectedEvent: WorldHistoryEvent | null;
+  activeEra: FilterValue;
+  onEraSelect: (era: WorldHistoryEvent["era"]) => void;
+}) {
   const eraCounts = ERA_ORDER.map((era) => ({ era, count: events.filter((event) => event.era === era).length }));
 
   return (
     <section className="timeline-ribbon" aria-label="시대 타임라인">
       <div className="timeline-track" aria-hidden="true" />
       {eraCounts.map(({ era, count }, index) => {
-        const isActive = selectedEvent?.era === era;
+        const isActive = activeEra === era || (activeEra === FILTER_ALL && selectedEvent?.era === era);
         const selectedInEra = events.filter((event) => event.era === era);
         return (
-          <div key={era} className={`timeline-node ${isActive ? "active" : ""}`}>
+          <button
+            key={era}
+            type="button"
+            className={`timeline-node ${isActive ? "active" : ""}`}
+            onClick={() => onEraSelect(era)}
+            aria-pressed={activeEra === era}
+          >
             <span>{era}</span>
             <small>{count}</small>
             <div className="timeline-dots" aria-hidden="true">
@@ -95,8 +115,10 @@ function TimelineRibbon({ events, selectedEvent }: { events: WorldHistoryEvent[]
               ))}
               {selectedInEra.length > 5 && <i className="timeline-more">+{selectedInEra.length - 5}</i>}
             </div>
-            <em className="timeline-step" aria-hidden="true">{index + 1}</em>
-          </div>
+            <em className="timeline-step" aria-hidden="true">
+              {index + 1}
+            </em>
+          </button>
         );
       })}
     </section>
