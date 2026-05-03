@@ -1,7 +1,7 @@
 "use client";
 
 import { Region, WorldHistoryEvent } from "@/types/worldHistory";
-import { useMemo, useState } from "react";
+import { PointerEvent, useMemo, useState } from "react";
 
 const REGION_HOTSPOTS: Array<{ region: Region; label: string; points: string }> = [
   { region: "아메리카", label: "아메리카", points: "8,18 30,14 36,52 22,70 10,58" },
@@ -40,6 +40,10 @@ export default function WorldMapPanel({
 }) {
   const hoverRegion = selectedEvent?.region ?? null;
   const [hoveredPointId, setHoveredPointId] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const mapPoints = useMemo(
     () =>
@@ -56,14 +60,45 @@ export default function WorldMapPanel({
     [events]
   );
 
+  const clampZoom = (value: number) => Math.min(3.2, Math.max(1, value));
+  const handleWheelZoom = (deltaY: number) => {
+    setZoom((prev) => clampZoom(prev + (deltaY < 0 ? 0.15 : -0.15)));
+  };
+
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    setDragging(true);
+    setDragStart({ x: event.clientX - offset.x, y: event.clientY - offset.y });
+  };
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    setOffset({ x: event.clientX - dragStart.x, y: event.clientY - dragStart.y });
+  };
+
   return (
     <section className="world-map-panel" aria-label="인터랙티브 세계지도">
       <div className="map-header">
         <strong>세계사 인터랙티브 맵</strong>
-        <span>실제 세계지도 윤곽 기반 · mapPoints 우선 표시</span>
+        <span>휠 확대/축소 · 드래그 이동 · mapPoints 우선 표시</span>
+      </div>
+      <div className="map-controls" aria-label="지도 배율 제어">
+        <button type="button" onClick={() => setZoom((prev) => clampZoom(prev + 0.2))}>+</button>
+        <button type="button" onClick={() => setZoom((prev) => clampZoom(prev - 0.2))}>−</button>
+        <button type="button" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}>초기화</button>
       </div>
 
-      <div className="world-map-stage">
+      <div
+        className={`world-map-stage ${dragging ? "dragging" : ""}`}
+        onWheel={(event) => {
+          event.preventDefault();
+          handleWheelZoom(event.deltaY);
+        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={() => setDragging(false)}
+        onPointerLeave={() => setDragging(false)}
+      >
+        <div className="world-map-transform" style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})` }}>
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg"
           alt="세계지도 윤곽"
@@ -102,6 +137,7 @@ export default function WorldMapPanel({
             );
           })}
         </svg>
+        </div>
       </div>
     </section>
   );

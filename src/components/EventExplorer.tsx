@@ -32,8 +32,8 @@ export default function EventExplorer({ events }: Props) {
   const selectedEvent = filteredEvents.find((e) => e.id === selectedId) ?? filteredEvents[0] ?? null;
 
   return (
-    <div className="layout-grid">
-      <section className="timeline-panel">
+    <div className="map-first-layout">
+      <section className="timeline-panel map-primary-panel">
         <div className="panel-head">
           <h2>세계사 마스터맵</h2>
           <p>카드 · 지도 · 타임라인을 한 화면에서 연결해 역사 구조를 파악하세요.</p>
@@ -69,7 +69,7 @@ export default function EventExplorer({ events }: Props) {
         </ul>
       </section>
 
-      <aside className="detail-panel">
+      <aside className="detail-panel map-side-panel">
         <EventDetailPanel event={selectedEvent} />
       </aside>
     </div>
