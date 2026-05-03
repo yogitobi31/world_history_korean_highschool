@@ -2,36 +2,30 @@ import { WorldHistoryEvent } from "@/types/worldHistory";
 
 export const earlyModernEvents: WorldHistoryEvent[] = [
   {
-    id: "renaissance-italy",
-    title: "르네상스의 전개(이탈리아 중심)",
-    era: "근세",
-    region: "유럽",
-    dateLabel: "14~16세기",
-    summary: "고전 문화 재발견과 인문주의 확산이 유럽 문화 지형을 바꾼 흐름.",
-    keywords: ["인문주의", "고전 문화", "도시 국가"],
-    causes: ["이탈리아 도시 상공업 성장", "비잔티움 학자 유입", "후원 문화 확대"],
-    consequences: ["예술·학문 혁신", "종교개혁·과학혁명에 간접 영향"],
-    relatedEvents: ["종교개혁", "대항해시대"],
-    examPoints: ["르네상스와 중세 스콜라 철학의 차이", "이탈리아 르네상스의 배경"],
-    commonConfusions: ["르네상스를 근대의 시작과 완전히 동일시하는 오류"],
-    mapPoints: [{ id: "florence", label: "피렌체", coordinates: [11.2558, 43.7696], type: "city" }],
-    reviewStatus: "검수 전 초안",
-    verified: false
-  },
-  {
     id: "age-of-discovery",
-    title: "대항해시대의 전개",
+    title: "대항해 시대의 전개",
     era: "근세",
     region: "세계 교류",
     dateLabel: "15~17세기",
-    summary: "해상 진출과 교역망 확대가 세계 지역 연결을 급격히 강화.",
-    keywords: ["콜럼버스", "향신료 무역", "해양 제국"],
-    causes: ["신항로 개척 동기", "항해 기술 발달"],
-    consequences: ["세계 교역 구조 변화", "식민지 지배 확대"],
-    relatedEvents: ["상업혁명", "가격혁명"],
-    examPoints: ["포르투갈·에스파냐의 진출 방향 비교"],
-    commonConfusions: ["대항해시대를 유럽 내부 사건으로만 보는 오류"],
-    mapPoints: [{ id: "lisbon", label: "리스본", coordinates: [-9.1393, 38.7223], type: "trade" }],
+    summary: "대서양과 인도양을 잇는 항로 개척으로 세계 해상 연결망이 빠르게 확대.",
+    keywords: ["신항로", "해양 제국", "대서양 교역"],
+    causes: ["향신료 무역 수요", "항해술·선박 기술 발달"],
+    consequences: ["대륙 간 교류 심화", "식민지 경쟁 확대"],
+    relatedEvents: ["몽골 제국과 유라시아 교류"],
+    examPoints: ["포르투갈·에스파냐의 항로 비교", "대항해가 만든 세계 교역 변화"],
+    commonConfusions: ["대항해 시대를 탐험사로만 보는 오류"],
+    mapPoints: [
+      { id: "lisbon", label: "리스본", coordinates: [-9.1393, 38.7223], type: "trade" },
+      { id: "goa", label: "고아", coordinates: [73.8278, 15.4909], type: "trade" },
+      { id: "seville", label: "세비야", coordinates: [-5.9845, 37.3891], type: "city" }
+    ],
+    mapLines: [
+      { id: "portuguese-route", label: "포르투갈 인도 항로", points: [[-9.1393, 38.7223], [-17, 14], [18.4, -34.2], [52, -20], [73.8278, 15.4909]], type: "voyage" },
+      { id: "atlantic-route", label: "대서양 횡단 항로", points: [[-5.9845, 37.3891], [-17.8, 28.3], [-61.2, 15.9], [-75.2, 20.1]], type: "voyage" }
+    ],
+    mapAreas: [
+      { id: "atlantic-network", label: "대서양-인도양 교역권", polygon: [[-80, 45], [-60, 10], [-30, -25], [20, -32], [70, -10], [80, 20], [35, 45], [-10, 52]], type: "network" }
+    ],
     reviewStatus: "검수 전 초안",
     verified: false
   }

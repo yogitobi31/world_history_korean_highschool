@@ -46,20 +46,9 @@ export default function WorldMapPanel({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const stageRef = useRef<HTMLDivElement | null>(null);
 
-  const mapPoints = useMemo(
-    () =>
-      events.map((event) => {
-        const primaryPoint = event.mapPoints?.[0];
-        const coordinates = primaryPoint?.coordinates ?? REGION_CENTER[event.region];
-        return {
-          event,
-          pointId: primaryPoint?.id ?? event.id,
-          label: primaryPoint?.label ?? event.title,
-          projected: project(coordinates)
-        };
-      }),
-    [events]
-  );
+  const points = useMemo(() => events.flatMap((event) => (event.mapPoints ?? []).map((point) => ({ event, point, projected: project(point.coordinates) }))), [events]);
+  const selectedLines = useMemo(() => (selectedEvent?.mapLines ?? []).map((line) => ({ ...line, projected: line.points.map(project) })), [selectedEvent]);
+  const selectedAreas = useMemo(() => (selectedEvent?.mapAreas ?? []).map((area) => ({ ...area, projected: area.polygon.map(project) })), [selectedEvent]);
 
   const clampZoom = (value: number) => Math.min(3.2, Math.max(1, value));
   const handleWheelZoom = (deltaY: number) => {
@@ -95,7 +84,7 @@ export default function WorldMapPanel({
     <section className="world-map-panel" aria-label="인터랙티브 세계지도">
       <div className="map-header">
         <strong>세계사 인터랙티브 맵</strong>
-        <span>휠 확대/축소 · 드래그 이동 · mapPoints 우선 표시</span>
+        <span>휠 확대/축소 · 드래그 이동 · 점/선/면 인터랙션</span>
       </div>
       <div className="map-controls" aria-label="지도 배율 제어">
         <button type="button" onClick={() => setZoom((prev) => clampZoom(prev + 0.2))}>+</button>
@@ -129,20 +118,32 @@ export default function WorldMapPanel({
             </polygon>
           ))}
 
-          {mapPoints.map(({ event, pointId, label, projected }) => {
-            const active = selectedEvent?.id === event.id || hoveredPointId === pointId;
+          {selectedAreas.map((area) => (
+            <polygon key={area.id} points={area.projected.map((p) => `${p.x},${p.y}`).join(" ")} className="event-area">
+              <title>{area.label}</title>
+            </polygon>
+          ))}
+
+          {selectedLines.map((line) => (
+            <polyline key={line.id} points={line.projected.map((p) => `${p.x},${p.y}`).join(" ")} className="event-line">
+              <title>{line.label}</title>
+            </polyline>
+          ))}
+
+          {points.map(({ event, point, projected }) => {
+            const active = selectedEvent?.id === event.id || hoveredPointId === point.id;
             return (
               <g
                 key={event.id}
                 onClick={() => onSelectEvent(event.id)}
-                onMouseEnter={() => setHoveredPointId(pointId)}
+                onMouseEnter={() => setHoveredPointId(point.id)}
                 onMouseLeave={() => setHoveredPointId(null)}
                 className="event-point-group"
               >
                 <circle cx={projected.x} cy={projected.y} r={active ? 1.8 : 1.25} className={`event-point ${active ? "active" : ""}`} />
-                {hoveredPointId === pointId && (
+                {hoveredPointId === point.id && (
                   <text x={projected.x + 1.4} y={projected.y - 1.6} className="event-point-label">
-                    {label}
+                    {point.label}
                   </text>
                 )}
                 <title>{event.title}</title>

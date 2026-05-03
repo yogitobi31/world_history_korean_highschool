@@ -30,6 +30,18 @@ export interface WorldHistoryEvent {
     coordinates: [number, number];
     type: "center" | "city" | "battle" | "trade" | "capital";
   }[];
+  mapLines?: {
+    id: string;
+    label: string;
+    points: [number, number][];
+    type: "migration" | "trade" | "expansion" | "voyage";
+  }[];
+  mapAreas?: {
+    id: string;
+    label: string;
+    polygon: [number, number][];
+    type: "sphere" | "empire" | "network";
+  }[];
   reviewStatus: ReviewStatus;
   verified: boolean;
 }
