@@ -14,6 +14,7 @@ export const modernEvents: WorldHistoryEvent[] = [
     relatedEvents: ["미국 독립혁명", "빈 체제"],
     examPoints: ["혁명 단계별 전개", "인권선언 핵심 내용"],
     commonConfusions: ["프랑스 혁명과 산업혁명의 시기·성격 혼동"],
+    mapPoints: [{ id: "paris", label: "파리", coordinates: [2.3522, 48.8566], type: "capital" }],
     reviewStatus: "검수 전 초안",
     verified: false
   },
@@ -30,6 +31,7 @@ export const modernEvents: WorldHistoryEvent[] = [
     relatedEvents: ["시민혁명", "사회주의 사상 확산"],
     examPoints: ["영국에서 먼저 시작된 배경", "산업혁명의 사회적 영향"],
     commonConfusions: ["산업혁명을 단순 기술 발명사로만 파악하는 오류"],
+    mapPoints: [{ id: "manchester", label: "맨체스터", coordinates: [-2.2426, 53.4808], type: "city" }],
     reviewStatus: "검수 전 초안",
     verified: false
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Region, WorldHistoryEvent } from "@/types/worldHistory";
+import { useMemo, useState } from "react";
 
 const REGION_HOTSPOTS: Array<{ region: Region; label: string; points: string }> = [
   { region: "아메리카", label: "아메리카", points: "8,18 30,14 36,52 22,70 10,58" },
@@ -22,12 +23,6 @@ const REGION_CENTER: Record<Region, [number, number]> = {
   "세계 교류": [0, 0]
 };
 
-const FLOW_LINES: Array<{ id: string; label: string; coords: [number, number][] }> = [
-  { id: "silk-road", label: "실크로드", coords: [[116.4, 39.9], [66.9, 39.6], [44.4, 33.3], [29, 41]] },
-  { id: "ocean-trade", label: "인도양", coords: [[77.2, 28.6], [72.8, 19], [55.3, 25.2], [39.2, -6.8]] },
-  { id: "atlantic", label: "대서양", coords: [[-3.7, 40.4], [-35, 20], [-74, 40.7]] }
-];
-
 const project = ([lon, lat]: [number, number]) => {
   const x = ((lon + 180) / 360) * 100;
   const y = ((90 - lat) / 180) * 78;
@@ -44,12 +39,28 @@ export default function WorldMapPanel({
   onSelectEvent: (id: string) => void;
 }) {
   const hoverRegion = selectedEvent?.region ?? null;
+  const [hoveredPointId, setHoveredPointId] = useState<string | null>(null);
+
+  const mapPoints = useMemo(
+    () =>
+      events.map((event) => {
+        const primaryPoint = event.mapPoints?.[0];
+        const coordinates = primaryPoint?.coordinates ?? REGION_CENTER[event.region];
+        return {
+          event,
+          pointId: primaryPoint?.id ?? event.id,
+          label: primaryPoint?.label ?? event.title,
+          projected: project(coordinates)
+        };
+      }),
+    [events]
+  );
 
   return (
     <section className="world-map-panel" aria-label="인터랙티브 세계지도">
       <div className="map-header">
         <strong>세계사 인터랙티브 맵</strong>
-        <span>실제 세계지도 윤곽 기반 · 점/선 오버레이</span>
+        <span>실제 세계지도 윤곽 기반 · mapPoints 우선 표시</span>
       </div>
 
       <div className="world-map-stage">
@@ -60,12 +71,6 @@ export default function WorldMapPanel({
         />
 
         <svg viewBox="0 0 100 78" className="world-map-overlay" role="img" aria-label="세계사 사건 지도 오버레이">
-          {FLOW_LINES.map((line) => {
-            const points = line.coords.map(project);
-            const path = points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
-            return <path key={line.id} d={path} className="map-flow-line" />;
-          })}
-
           {REGION_HOTSPOTS.map((region) => (
             <polygon
               key={region.region}
@@ -76,12 +81,22 @@ export default function WorldMapPanel({
             </polygon>
           ))}
 
-          {events.map((event) => {
-            const pos = project(REGION_CENTER[event.region]);
-            const active = selectedEvent?.id === event.id;
+          {mapPoints.map(({ event, pointId, label, projected }) => {
+            const active = selectedEvent?.id === event.id || hoveredPointId === pointId;
             return (
-              <g key={event.id} onClick={() => onSelectEvent(event.id)} className="event-point-group">
-                <circle cx={pos.x} cy={pos.y} r={active ? 1.8 : 1.25} className={`event-point ${active ? "active" : ""}`} />
+              <g
+                key={event.id}
+                onClick={() => onSelectEvent(event.id)}
+                onMouseEnter={() => setHoveredPointId(pointId)}
+                onMouseLeave={() => setHoveredPointId(null)}
+                className="event-point-group"
+              >
+                <circle cx={projected.x} cy={projected.y} r={active ? 1.8 : 1.25} className={`event-point ${active ? "active" : ""}`} />
+                {hoveredPointId === pointId && (
+                  <text x={projected.x + 1.4} y={projected.y - 1.6} className="event-point-label">
+                    {label}
+                  </text>
+                )}
                 <title>{event.title}</title>
               </g>
             );

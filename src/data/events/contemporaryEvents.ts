@@ -14,6 +14,7 @@ export const contemporaryEvents: WorldHistoryEvent[] = [
     relatedEvents: ["러시아 혁명", "국제연맹 창설"],
     examPoints: ["전쟁 원인 구조", "전후 처리의 한계"],
     commonConfusions: ["1차·2차 세계대전의 전후 체제 결과 혼동"],
+    mapPoints: [{ id: "sarajevo", label: "사라예보", coordinates: [18.4131, 43.8563], type: "battle" }],
     reviewStatus: "검수 전 초안",
     verified: false
   }
