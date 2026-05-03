@@ -94,9 +94,20 @@ body {
 }
 
 .timeline-ribbon {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
+  padding-top: 12px;
+}
+.timeline-track {
+  position: absolute;
+  top: 28px;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  background: linear-gradient(90deg, #d4deeb, #bfcde0);
+  border-radius: 999px;
 }
 .timeline-node {
   border: 1px solid #d8e0eb;
@@ -209,4 +220,77 @@ body {
   .filters, .detail-grid, .timeline-ribbon { grid-template-columns: 1fr; }
   .card-list { max-height: 46vh; }
   .map-header { display: block; }
+}
+
+.map-flow {
+  stroke: #c2cedf;
+  stroke-width: 0.8;
+  stroke-dasharray: 1.4 1.2;
+}
+.map-flow.active {
+  stroke: #4d6f9c;
+  stroke-width: 1.1;
+}
+.map-flow-label {
+  fill: #7b8ba1;
+  font-size: 2.4px;
+  text-anchor: middle;
+}
+.map-node {
+  fill: #8096b4;
+  opacity: 0.88;
+}
+.map-node.active {
+  fill: #1f3f66;
+}
+.timeline-node {
+  position: relative;
+  border: 1px solid #d8e0eb;
+  border-radius: 14px;
+  padding: 10px;
+  background: #fcfdff;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  z-index: 1;
+}
+.timeline-step {
+  position: absolute;
+  top: -11px;
+  left: 10px;
+  font-style: normal;
+  font-size: 11px;
+  color: #7d8aa1;
+  background: #f7faff;
+  border: 1px solid #d5deea;
+  border-radius: 999px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.timeline-dots {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+.timeline-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #c7d4e6;
+}
+.timeline-dot.active {
+  width: 10px;
+  background: #3a587a;
+}
+.timeline-more {
+  font-style: normal;
+  font-size: 10px;
+  color: #67778f;
 }
