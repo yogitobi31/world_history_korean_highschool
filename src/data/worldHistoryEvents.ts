@@ -1,0 +1,99 @@
+export type WorldHistoryEvent = {
+  id: string;
+  title: string;
+  era: string;
+  region: string;
+  dateLabel: string;
+  summary: string;
+  keywords: string[];
+  causes: string[];
+  consequences: string[];
+  relatedEvents: string[];
+  examPoints: string[];
+  commonConfusions: string[];
+  reviewStatus: string;
+  verified: boolean;
+};
+
+export const worldHistoryEvents: WorldHistoryEvent[] = [
+  {
+    id: "renaissance-italy",
+    title: "르네상스의 전개(이탈리아 중심)",
+    era: "중세~근세 전환",
+    region: "유럽",
+    dateLabel: "14~16세기",
+    summary: "고전 문화 재발견과 인문주의 확산이 유럽 문화 지형을 바꾼 흐름.",
+    keywords: ["인문주의", "고전 문화", "도시 국가"],
+    causes: ["이탈리아 도시 상공업 성장", "비잔티움 학자 유입", "후원 문화 확대"],
+    consequences: ["예술·학문 혁신", "종교개혁·과학혁명에 간접 영향"],
+    relatedEvents: ["종교개혁", "대항해시대"],
+    examPoints: ["르네상스와 중세 스콜라 철학의 차이", "이탈리아 르네상스의 배경"],
+    commonConfusions: ["르네상스를 근대의 시작과 완전히 동일시하는 오류"],
+    reviewStatus: "검수 전 초안",
+    verified: false
+  },
+  {
+    id: "age-of-discovery",
+    title: "대항해시대의 전개",
+    era: "근세",
+    region: "유럽·대서양",
+    dateLabel: "15~17세기",
+    summary: "해상 진출과 교역망 확대가 세계 지역 연결을 급격히 강화.",
+    keywords: ["콜럼버스", "향신료 무역", "해양 제국"],
+    causes: ["신항로 개척 동기", "항해 기술 발달"],
+    consequences: ["세계 교역 구조 변화", "식민지 지배 확대"],
+    relatedEvents: ["상업혁명", "가격혁명"],
+    examPoints: ["포르투갈·에스파냐의 진출 방향 비교"],
+    commonConfusions: ["대항해시대를 유럽 내부 사건으로만 보는 오류"],
+    reviewStatus: "검수 전 초안",
+    verified: false
+  },
+  {
+    id: "french-revolution",
+    title: "프랑스 혁명",
+    era: "근대",
+    region: "유럽",
+    dateLabel: "1789년~1799년",
+    summary: "구체제 붕괴와 시민 주권 원리가 확산된 정치·사회 변동.",
+    keywords: ["삼부회", "인권선언", "공화정"],
+    causes: ["재정 위기", "계몽사상 확산", "신분제 모순"],
+    consequences: ["나폴레옹 시대 전개", "유럽 전역에 혁명 이념 확산"],
+    relatedEvents: ["미국 독립혁명", "빈 체제"],
+    examPoints: ["혁명 단계별 전개", "인권선언 핵심 내용"],
+    commonConfusions: ["프랑스 혁명과 산업혁명의 시기·성격 혼동"],
+    reviewStatus: "검수 전 초안",
+    verified: false
+  },
+  {
+    id: "industrial-revolution",
+    title: "산업혁명(영국 중심)",
+    era: "근대",
+    region: "유럽",
+    dateLabel: "18세기 후반~19세기",
+    summary: "기계화 생산체제 확산으로 경제·노동·도시 구조가 재편.",
+    keywords: ["공장제", "증기기관", "도시화"],
+    causes: ["자본 축적", "풍부한 자원", "농업 생산성 향상"],
+    consequences: ["노동문제 대두", "제국주의 경쟁 심화"],
+    relatedEvents: ["시민혁명", "사회주의 사상 확산"],
+    examPoints: ["영국에서 먼저 시작된 배경", "산업혁명의 사회적 영향"],
+    commonConfusions: ["산업혁명을 단순 기술 발명사로만 파악하는 오류"],
+    reviewStatus: "검수 전 초안",
+    verified: false
+  },
+  {
+    id: "world-war-i",
+    title: "제1차 세계대전",
+    era: "현대",
+    region: "유럽·세계",
+    dateLabel: "1914년~1918년",
+    summary: "동맹 체제와 제국주의 갈등이 총력전으로 폭발한 세계 전쟁.",
+    keywords: ["총력전", "동맹", "베르사유"],
+    causes: ["군비 경쟁", "민족주의 갈등", "발칸 위기"],
+    consequences: ["제국 해체", "국제질서 재편 시도"],
+    relatedEvents: ["러시아 혁명", "국제연맹 창설"],
+    examPoints: ["전쟁 원인 구조", "전후 처리의 한계"],
+    commonConfusions: ["1차·2차 세계대전의 전후 체제 결과 혼동"],
+    reviewStatus: "검수 전 초안",
+    verified: false
+  }
+];
