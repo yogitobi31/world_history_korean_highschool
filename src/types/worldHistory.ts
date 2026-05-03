@@ -24,6 +24,12 @@ export interface WorldHistoryEvent {
   relatedEvents: string[];
   examPoints: string[];
   commonConfusions: string[];
+  mapPoints?: {
+    id: string;
+    label: string;
+    coordinates: [number, number];
+    type: "center" | "city" | "battle" | "trade" | "capital";
+  }[];
   reviewStatus: ReviewStatus;
   verified: boolean;
 }

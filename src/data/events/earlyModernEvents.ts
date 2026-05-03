@@ -14,6 +14,7 @@ export const earlyModernEvents: WorldHistoryEvent[] = [
     relatedEvents: ["종교개혁", "대항해시대"],
     examPoints: ["르네상스와 중세 스콜라 철학의 차이", "이탈리아 르네상스의 배경"],
     commonConfusions: ["르네상스를 근대의 시작과 완전히 동일시하는 오류"],
+    mapPoints: [{ id: "florence", label: "피렌체", coordinates: [11.2558, 43.7696], type: "city" }],
     reviewStatus: "검수 전 초안",
     verified: false
   },
@@ -30,6 +31,7 @@ export const earlyModernEvents: WorldHistoryEvent[] = [
     relatedEvents: ["상업혁명", "가격혁명"],
     examPoints: ["포르투갈·에스파냐의 진출 방향 비교"],
     commonConfusions: ["대항해시대를 유럽 내부 사건으로만 보는 오류"],
+    mapPoints: [{ id: "lisbon", label: "리스본", coordinates: [-9.1393, 38.7223], type: "trade" }],
     reviewStatus: "검수 전 초안",
     verified: false
   }

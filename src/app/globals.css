@@ -76,6 +76,14 @@ body {
 .event-point { fill: #1f3f66; opacity: 0.9; cursor: pointer; }
 .event-point.active { fill: #d5752a; }
 .event-point-group:hover .event-point { fill: #315f94; }
+.event-point-label {
+  font-size: 2.2px;
+  fill: #1e314a;
+  paint-order: stroke;
+  stroke: #fdfefe;
+  stroke-width: 0.45px;
+  pointer-events: none;
+}
 
 .timeline-ribbon {
   position: relative;
