@@ -1,7 +1,7 @@
 "use client";
 
 import { Region, WorldHistoryEvent } from "@/types/worldHistory";
-import { PointerEvent, useMemo, useState } from "react";
+import { PointerEvent, useEffect, useMemo, useRef, useState } from "react";
 
 const REGION_HOTSPOTS: Array<{ region: Region; label: string; points: string }> = [
   { region: "아메리카", label: "아메리카", points: "8,18 30,14 36,52 22,70 10,58" },
@@ -44,6 +44,7 @@ export default function WorldMapPanel({
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const stageRef = useRef<HTMLDivElement | null>(null);
 
   const mapPoints = useMemo(
     () =>
@@ -72,8 +73,23 @@ export default function WorldMapPanel({
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (!dragging) return;
+    event.preventDefault();
     setOffset({ x: event.clientX - dragStart.x, y: event.clientY - dragStart.y });
   };
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      handleWheelZoom(event.deltaY);
+    };
+
+    stage.addEventListener("wheel", handleWheel, { passive: false });
+    return () => stage.removeEventListener("wheel", handleWheel);
+  }, []);
 
   return (
     <section className="world-map-panel" aria-label="인터랙티브 세계지도">
@@ -88,11 +104,8 @@ export default function WorldMapPanel({
       </div>
 
       <div
+        ref={stageRef}
         className={`world-map-stage ${dragging ? "dragging" : ""}`}
-        onWheel={(event) => {
-          event.preventDefault();
-          handleWheelZoom(event.deltaY);
-        }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={() => setDragging(false)}
