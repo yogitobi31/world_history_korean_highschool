@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import EventCard from "@/components/EventCard";
 import EventDetailPanel from "@/components/EventDetailPanel";
 import FilterBar from "@/components/FilterBar";
-import { FILTER_ALL, filterEvents, getEras, getRegions } from "@/lib/filters";
+import { FILTER_ALL, FilterValue, filterEvents, getEras, getRegions } from "@/lib/filters";
 import { WorldHistoryEvent } from "@/types/worldHistory";
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
 };
 
 export default function EventExplorer({ events }: Props) {
-  const [eraFilter, setEraFilter] = useState(FILTER_ALL);
-  const [regionFilter, setRegionFilter] = useState(FILTER_ALL);
+  const [eraFilter, setEraFilter] = useState<FilterValue>(FILTER_ALL);
+  const [regionFilter, setRegionFilter] = useState<FilterValue>(FILTER_ALL);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(events[0]?.id ?? "");
 
