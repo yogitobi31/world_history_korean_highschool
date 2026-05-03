@@ -1,25 +1,10 @@
-export type WorldHistoryEvent = {
-  id: string;
-  title: string;
-  era: string;
-  region: string;
-  dateLabel: string;
-  summary: string;
-  keywords: string[];
-  causes: string[];
-  consequences: string[];
-  relatedEvents: string[];
-  examPoints: string[];
-  commonConfusions: string[];
-  reviewStatus: string;
-  verified: boolean;
-};
+import { WorldHistoryEvent } from "@/types/worldHistory";
 
 export const worldHistoryEvents: WorldHistoryEvent[] = [
   {
     id: "renaissance-italy",
     title: "르네상스의 전개(이탈리아 중심)",
-    era: "중세~근세 전환",
+    era: "근세",
     region: "유럽",
     dateLabel: "14~16세기",
     summary: "고전 문화 재발견과 인문주의 확산이 유럽 문화 지형을 바꾼 흐름.",
@@ -36,7 +21,7 @@ export const worldHistoryEvents: WorldHistoryEvent[] = [
     id: "age-of-discovery",
     title: "대항해시대의 전개",
     era: "근세",
-    region: "유럽·대서양",
+    region: "세계 교류",
     dateLabel: "15~17세기",
     summary: "해상 진출과 교역망 확대가 세계 지역 연결을 급격히 강화.",
     keywords: ["콜럼버스", "향신료 무역", "해양 제국"],
@@ -84,7 +69,7 @@ export const worldHistoryEvents: WorldHistoryEvent[] = [
     id: "world-war-i",
     title: "제1차 세계대전",
     era: "현대",
-    region: "유럽·세계",
+    region: "세계 교류",
     dateLabel: "1914년~1918년",
     summary: "동맹 체제와 제국주의 갈등이 총력전으로 폭발한 세계 전쟁.",
     keywords: ["총력전", "동맹", "베르사유"],
